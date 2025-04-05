@@ -23,22 +23,11 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:dataframe:0.13.0")
-	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 	implementation("org.knowm.xchart:xchart:3.8.8")
-
-	runtimeOnly("org.postgresql:postgresql")
-	runtimeOnly("org.flywaydb:flyway-core")
-	runtimeOnly("org.springframework:spring-jdbc")
 
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-
-
-	testImplementation("org.springframework.boot:spring-boot-testcontainers")
-	testImplementation("org.testcontainers:jdbc")
-	testImplementation("org.testcontainers:postgresql")
-	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

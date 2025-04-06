@@ -37,4 +37,29 @@ class ChartGenerationServiceTest {
         assertThat(result.width).isEqualTo(chartInfo.width)
         assertThat(result.height).isEqualTo(chartInfo.height)
     }
+
+    @Test
+    fun shouldCreateABTCTransactionsChart() {
+        val data = mapOf(
+            "status" to "ok",
+            "name" to "n-transactions",
+            "unit" to "Transactions",
+            "period" to "day",
+            "description" to "The number of transactions per day",
+            "values" to listOf(
+                mapOf(
+                    "x" to 1712421101,
+                    "y" to 248135
+                )
+            )
+        )
+
+        val chartInfo = chartInfoService.btcTransactionsChartInfo(TimeUnit.DAYS, TimeValue.I200)
+        val result = chartGenerationService.btcTransactionsChart(data, chartInfo)
+
+        assertThat(result).isNotNull
+        assertThat(result.title).isEqualTo(chartInfo.chartTitle)
+        assertThat(result.width).isEqualTo(chartInfo.width)
+        assertThat(result.height).isEqualTo(chartInfo.height)
+    }
 }

@@ -15,4 +15,13 @@ class DataframeService(private val dataAdapterService: DataAdapterService) {
             "volume" to volumePoints.map { it.value }
         )
     }
+
+    fun nTransactionsDataframe(data: Map<String, Any>): AnyFrame {
+        val volumePoints = dataAdapterService.listOfNTransactions(data)
+
+        return dataFrameOf(
+            "time" to volumePoints.map { it.timestamp },
+            "transactions" to volumePoints.map { it.value }
+        )
+    }
 }

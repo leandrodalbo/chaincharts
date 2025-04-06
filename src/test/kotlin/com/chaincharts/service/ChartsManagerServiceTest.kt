@@ -17,10 +17,11 @@ class ChartsManagerServiceTest {
 
     private val chartGenerationService: ChartGenerationService = mockk()
     private val dataService: DataService = mockk()
-    private val chartInfoService: ChartInfoService = ChartInfoService()
+    private val chartDispatcherService: ChartDispatcherService = mockk()
 
+    private val chartInfoService: ChartInfoService = ChartInfoService()
     private val chartsManagerService: ChartsManagerService =
-        ChartsManagerService(dataService, chartGenerationService, chartInfoService)
+        ChartsManagerService(dataService, chartGenerationService, chartInfoService, chartDispatcherService)
 
     @Test
     fun shouldFetchDataAndGenerateABTCVolumeChart() {
@@ -47,14 +48,62 @@ class ChartsManagerServiceTest {
 
         every { dataService.fetchData(any<String>()) } returns data
         every { chartGenerationService.btcVolumeChart(any(), any<ChartInfo>()) } returns chart
+        every {
+            chartDispatcherService.chartUri(
+                any<XYChart>(),
+                any<String>()
+            )
+        } returns "/home/leandro/charts/chartKey.png"
 
         val result = chartsManagerService.btcVolumeChart(TimeUnit.DAYS, TimeValue.I200)
 
         assertThat(result.assetKey).isNotNull()
-        assertThat(result.assetUri).contains(result.assetKey)
+        assertThat(result.assetUri).isEqualTo("/home/leandro/charts/chartKey.png")
 
         verify { dataService.fetchData(any()) }
         verify { chartGenerationService.btcVolumeChart(any(), any()) }
+        verify { chartDispatcherService.chartUri(any<XYChart>(), any<String>()) }
+    }
 
+    @Test
+    fun shouldFetchDataAndGenerateABTCTransactionsChart() {
+        val data = mapOf(
+            "status" to "ok",
+            "name" to "n-transactions",
+            "unit" to "Transactions",
+            "period" to "day",
+            "description" to "The number of transactions per day",
+            "values" to listOf(
+                mapOf(
+                    "x" to 1712421101,
+                    "y" to 248135
+                )
+            )
+        )
+
+        var chart: XYChart = XYChartBuilder()
+            .width(100).height(200)
+            .title("mychart")
+            .xAxisTitle("x")
+            .yAxisTitle("y")
+            .build()
+
+        every { dataService.fetchData(any<String>()) } returns data
+        every { chartGenerationService.btcTransactionsChart(any(), any<ChartInfo>()) } returns chart
+        every {
+            chartDispatcherService.chartUri(
+                any<XYChart>(),
+                any<String>()
+            )
+        } returns "/home/leandro/charts/chartKey.png"
+
+        val result = chartsManagerService.btcTransactionsChart(TimeUnit.DAYS, TimeValue.I200)
+
+        assertThat(result.assetKey).isNotNull()
+        assertThat(result.assetUri).isEqualTo("/home/leandro/charts/chartKey.png")
+
+        verify { dataService.fetchData(any()) }
+        verify { chartGenerationService.btcTransactionsChart(any(), any()) }
+        verify { chartDispatcherService.chartUri(any<XYChart>(), any<String>()) }
     }
 }

@@ -19,14 +19,38 @@ class ChartInfoService {
             dataUri,
             key,
             assetUri = "",
+            width = 1800,
+            height = 1200,
             chartTitle = "BTC Transaction Volume vs ${timeValue.value}-${timeUnit.value} Average",
             xAxisTitle = "Date",
             yAxisTitle = "Volume (USD)",
             seriesA = "Volume",
             seriesB = "Avg",
             seriesC = "Today",
+            seriesD = ""
+        )
+
+    }
+
+    fun btcTransactionsChartInfo(timeUnit: TimeUnit, timeValue: TimeValue): ChartInfo {
+        val dataUri =
+            "/charts/n-transactions?timespan=${timeValue.value}${timeUnit.value}&format=json"
+        val key = generateChartKey(dataUri)
+        return ChartInfo(
+            timeUnit,
+            timeValue,
+            dataUri,
+            key,
+            assetUri = "",
             width = 1800,
-            height = 1200
+            height = 1200,
+            chartTitle = "BTC Number of Transactions ${timeValue.value}-${timeUnit.value}",
+            xAxisTitle = "Date",
+            yAxisTitle = "Transactions",
+            seriesA = "Transactions",
+            seriesB = "Moving Avg",
+            seriesC = "Min",
+            seriesD = "Max"
         )
 
     }

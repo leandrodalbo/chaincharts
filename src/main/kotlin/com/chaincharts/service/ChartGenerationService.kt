@@ -1,8 +1,11 @@
 package com.chaincharts.service
 
 import com.chaincharts.domain.ChartInfo
+import com.chaincharts.domain.TimeValue
 import org.knowm.xchart.XYChart
 import org.knowm.xchart.XYChartBuilder
+import org.knowm.xchart.XYSeries
+import org.knowm.xchart.style.Styler
 import org.knowm.xchart.style.markers.SeriesMarkers
 import org.springframework.stereotype.Service
 import java.awt.BasicStroke
@@ -44,4 +47,50 @@ class ChartGenerationService(private val dataframeService: DataframeService) {
         return chart
     }
 
+    fun btcTransactionsChart(data: Map<String, Any>, chartInfo: ChartInfo): XYChart {
+        val df = dataframeService.nTransactionsDataframe(data)
+
+        val dates = (df["time"].toList() as List<Instant>).map { Date.from(it) }
+        val transactions = df["transactions"].toList() as List<Long>
+
+        val movingAvg = transactions.mapIndexed { index, _ ->
+            if (index < TimeValue.I9.value.toInt()) null
+            else transactions.subList(index - TimeValue.I9.value.toInt(), index + 1).average()
+        }
+
+        val minIndex = transactions.indices.minByOrNull { transactions[it] } ?: 0
+        val maxIndex = transactions.indices.maxByOrNull { transactions[it] } ?: 0
+
+        return XYChartBuilder()
+            .width(chartInfo.width).height(chartInfo.height)
+            .title(chartInfo.chartTitle)
+            .xAxisTitle(chartInfo.xAxisTitle)
+            .yAxisTitle(chartInfo.yAxisTitle)
+            .build().apply {
+                styler.apply {
+                    defaultSeriesRenderStyle = XYSeries.XYSeriesRenderStyle.Line
+                    isLegendVisible = true
+                    markerSize = 6
+                }
+                addSeries(chartInfo.seriesA, dates, transactions)
+                addSeries(chartInfo.seriesB, dates, movingAvg)
+
+                addSeries(
+                    "${chartInfo.seriesC} (${dates[minIndex]})",
+                    listOf(dates[minIndex]),
+                    listOf(transactions[minIndex])
+                ).apply {
+                    marker = SeriesMarkers.CIRCLE
+                }
+
+                addSeries(
+                    "${chartInfo.seriesD} (${dates[maxIndex]})",
+                    listOf(dates[maxIndex]),
+                    listOf(transactions[maxIndex])
+                ).apply {
+                    marker = SeriesMarkers.DIAMOND
+                }
+            }
+
+    }
 }

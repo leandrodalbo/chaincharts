@@ -1,5 +1,7 @@
 package com.chaincharts.service
 
+import com.chaincharts.domain.TimeUnit
+import com.chaincharts.domain.TimeValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -7,8 +9,10 @@ class ChartGenerationServiceTest {
 
     private var chartGenerationService = ChartGenerationService(DataframeService(DataAdapterService()))
 
+    private val chartInfoService = ChartInfoService()
+
     @Test
-    fun shouldCreateA365BTCVolumesChart() {
+    fun shouldCreateABTCVolumeChart() {
         val data = mapOf(
             "status" to "ok",
             "name" to "Estimated USD Transaction Value",
@@ -25,9 +29,12 @@ class ChartGenerationServiceTest {
             )
         )
 
-        val result = chartGenerationService.generate365BTCVolumeChart(data)
+        val chartInfo = chartInfoService.btcVolumeChartInfo(TimeUnit.DAYS, TimeValue.I200)
+        val result = chartGenerationService.btcVolumeChart(data, chartInfo)
 
         assertThat(result).isNotNull
-        assertThat(result).isEqualTo("/home/leandro/charts/btc_volume_vs_avg.png")
+        assertThat(result.title).isEqualTo(chartInfo.chartTitle)
+        assertThat(result.width).isEqualTo(chartInfo.width)
+        assertThat(result.height).isEqualTo(chartInfo.height)
     }
 }

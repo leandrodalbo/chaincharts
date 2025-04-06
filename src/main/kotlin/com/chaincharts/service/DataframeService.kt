@@ -11,8 +11,8 @@ class DataframeService(private val dataAdapterService: DataAdapterService) {
         val volumePoints = dataAdapterService.listOfVolumePoints(data)
 
         return dataFrameOf(
-            "Time" to volumePoints.map { it.timestamp },
-            "Volume (USD)" to volumePoints.map { it.value }
+            "time" to volumePoints.map { it.timestamp },
+            "volume" to volumePoints.map { it.value }
         )
     }
 }

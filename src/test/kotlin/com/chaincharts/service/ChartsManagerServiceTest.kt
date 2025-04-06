@@ -1,22 +1,29 @@
 package com.chaincharts.service
 
+import com.chaincharts.domain.ChartInfo
+import com.chaincharts.domain.TimeUnit
+import com.chaincharts.domain.TimeValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.knowm.xchart.XYChart
+import org.knowm.xchart.XYChartBuilder
 
 
 class ChartsManagerServiceTest {
 
     private val chartGenerationService: ChartGenerationService = mockk()
     private val dataService: DataService = mockk()
+    private val chartInfoService: ChartInfoService = ChartInfoService()
 
-    private val chartsManagerService: ChartsManagerService = ChartsManagerService(dataService, chartGenerationService)
+    private val chartsManagerService: ChartsManagerService =
+        ChartsManagerService(dataService, chartGenerationService, chartInfoService)
 
     @Test
-    fun shouldFetchDataAndGenerateA365daysBTCVolumeChart() {
+    fun shouldFetchDataAndGenerateABTCVolumeChart() {
         val data = mapOf(
             "status" to "ok",
             "name" to "Estimated USD Transaction Value",
@@ -31,14 +38,23 @@ class ChartsManagerServiceTest {
             )
         )
 
-        every { dataService.fetchChainData("/charts/estimated-transaction-volume-usd?timespan=365days&format=json") } returns data
-        every { chartGenerationService.generate365BTCVolumeChart(any()) } returns "/home/leandro/charts/btc_volume_vs_avg.png"
+        var chart: XYChart = XYChartBuilder()
+            .width(100).height(200)
+            .title("mychart")
+            .xAxisTitle("x")
+            .yAxisTitle("y")
+            .build()
 
-        val result = chartsManagerService.btc365VolumeWithAvg()
+        every { dataService.fetchData(any<String>()) } returns data
+        every { chartGenerationService.btcVolumeChart(any(), any<ChartInfo>()) } returns chart
 
-        assertThat(result).isEqualTo("/home/leandro/charts/btc_volume_vs_avg.png")
+        val result = chartsManagerService.btcVolumeChart(TimeUnit.DAYS, TimeValue.I200)
 
-        verify { dataService.fetchChainData("/charts/estimated-transaction-volume-usd?timespan=365days&format=json") }
-        verify { chartGenerationService.generate365BTCVolumeChart(data) }
+        assertThat(result.assetKey).isNotNull()
+        assertThat(result.assetUri).contains(result.assetKey)
+
+        verify { dataService.fetchData(any()) }
+        verify { chartGenerationService.btcVolumeChart(any(), any()) }
+
     }
 }

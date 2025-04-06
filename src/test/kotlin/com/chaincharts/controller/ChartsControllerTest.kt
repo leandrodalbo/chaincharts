@@ -1,5 +1,9 @@
 package com.chaincharts.controller
 
+import com.chaincharts.domain.ChartInfo
+import com.chaincharts.domain.TimeUnit
+import com.chaincharts.domain.TimeValue
+import com.chaincharts.service.ChartInfoService
 import com.chaincharts.service.ChartsManagerService
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -10,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -23,15 +28,38 @@ class ChartsControllerTest {
     @MockkBean
     private lateinit var chartsManagerService: ChartsManagerService
 
-    @Test
-    fun shouldGenerateBTC365VolumeChart() {
-        every { chartsManagerService.btc365VolumeWithAvg() } returns "/tmp/my/btc365/volume/chart"
+    private val chartInfoService = ChartInfoService()
 
-        val response = mockMvc.perform(get("/api/charts/btc365volume"))
+    @Test
+    fun shouldGetBTCVolumeChart() {
+        val chartInfo: ChartInfo = chartInfoService.btcVolumeChartInfo(TimeUnit.DAYS, TimeValue.I365)
+        every { chartsManagerService.btcVolumeChart(any<TimeUnit>(), any<TimeValue>()) } returns chartInfo
+
+        val response = mockMvc.perform(
+            get("/api/charts/btcvolumechart")
+                .queryParam("timeUnit", TimeUnit.DAYS.name)
+                .queryParam("timeValue", TimeValue.I365.name)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
             .andReturn().response
 
         assertThat(response.status).isEqualTo(HttpStatus.OK.value())
 
-        verify { chartsManagerService.btc365VolumeWithAvg() }
+        verify { chartsManagerService.btcVolumeChart(any<TimeUnit>(), any<TimeValue>()) }
+    }
+
+    @Test
+    fun shouldHandleInvalidInputs() {
+
+        val response = mockMvc.perform(
+            get("/api/charts/btcvolumechart")
+                .queryParam("timeUnit", "FRUTA")
+                .queryParam("timeValue", TimeValue.I365.name)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andReturn().response
+
+        assertThat(response.status).isEqualTo(HttpStatus.BAD_REQUEST.value())
+
     }
 }

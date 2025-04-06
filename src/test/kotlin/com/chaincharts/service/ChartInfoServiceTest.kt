@@ -15,6 +15,17 @@ class ChartInfoServiceTest {
 
         assertThat(result.chartTitle).contains(TimeUnit.DAYS.value)
         assertThat(result.chartTitle).contains(TimeValue.I365.toString())
+        assertThat(result.dataUri).contains("estimated-transaction-volume-usd")
+        assertThat(result.assetKey).isNotEmpty()
+    }
+
+    @Test
+    fun shouldCreateBTCTransactionsChartMetadata() {
+        val result = chartInfoService.btcTransactionsChartInfo(TimeUnit.DAYS, TimeValue.I365)
+
+        assertThat(result.chartTitle).contains(TimeUnit.DAYS.value)
+        assertThat(result.chartTitle).contains(TimeValue.I365.toString())
+        assertThat(result.dataUri).contains("n-transactions")
         assertThat(result.assetKey).isNotEmpty()
     }
 

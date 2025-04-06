@@ -29,4 +29,27 @@ class DataframeServiceTest {
         assertThat(result["time"]).isNotNull
         assertThat(result["volume"]).isNotNull
     }
+
+    @Test
+    fun shouldCreateADataframeWithTransactionsData() {
+        val data = mapOf(
+            "status" to "ok",
+            "name" to "n-transactions",
+            "unit" to "Transactions",
+            "period" to "day",
+            "description" to "The number of transactions per day",
+            "values" to listOf(
+                mapOf(
+                    "x" to 1712421101,
+                    "y" to 248135
+                )
+            )
+        )
+
+        val result = dataframeService.nTransactionsDataframe(data)
+
+        assertThat(result).isNotNull
+        assertThat(result["time"]).isNotNull
+        assertThat(result["transactions"]).isNotNull
+    }
 }

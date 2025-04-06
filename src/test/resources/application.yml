@@ -1,12 +1,3 @@
 spring:
   application:
     name: chaincharts-api
-  datasource:
-    username: user
-    password: password
-    url: jdbc:postgresql://localhost:5432/chaincharts
-  flyway:
-    enabled: false
-  sql:
-    init:
-      mode: always

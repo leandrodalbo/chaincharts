@@ -4,12 +4,6 @@ server:
 spring:
   application:
     name: chaincharts-api
-  datasource:
-    username: user
-    password: password
-    url:  jdbc:postgresql://localhost:5432/chaincharts
-  flyway:
-    url: jdbc:postgresql://localhost:5432/chaincharts
-    user: user
-    password: password
 
+dataconf:
+  apiUrl: https://api.blockchain.info

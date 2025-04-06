@@ -9,7 +9,7 @@ import org.springframework.web.client.body
 @Service
 class DataService(private val restClient: RestClient) {
 
-    fun fetchChainData(urlPath: String): Map<String, Any> {
+    fun fetchData(urlPath: String): Map<String, Any> {
         return restClient.get()
             .uri(urlPath)
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)

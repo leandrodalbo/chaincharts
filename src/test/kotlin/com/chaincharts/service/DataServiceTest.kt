@@ -47,7 +47,7 @@ class DataServiceTest {
 
     @Test
     @Throws(JsonProcessingException::class)
-    fun shouldFetchBinanceSymbols() {
+    fun shouldFetchData() {
         val mockResponse = MockResponse()
             .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .setBody(
@@ -71,7 +71,7 @@ class DataServiceTest {
         mockWebServer!!.enqueue(mockResponse)
 
         val result =
-            dataService?.fetchChainData("/charts/estimated-transaction-volume-usd?timespan=24hours&format=json")
+            dataService?.fetchData("/charts/estimated-transaction-volume-usd?timespan=24hours&format=json")
                 ?: emptyMap()
 
         assertThat(result["values"] as List<*>?).isNotEmpty()

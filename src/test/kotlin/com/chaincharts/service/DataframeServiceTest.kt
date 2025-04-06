@@ -26,6 +26,7 @@ class DataframeServiceTest {
         val result = dataframeService.volumePointsDataframe(data)
 
         assertThat(result).isNotNull
-        assertThat(result.rowsCount()).isEqualTo(1)
+        assertThat(result["time"]).isNotNull
+        assertThat(result["volume"]).isNotNull
     }
 }

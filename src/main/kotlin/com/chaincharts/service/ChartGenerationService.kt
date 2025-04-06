@@ -1,7 +1,7 @@
 package com.chaincharts.service
 
-import kotlinx.datetime.LocalDate
 import org.knowm.xchart.BitmapEncoder
+import org.knowm.xchart.XYChart
 import org.knowm.xchart.XYChartBuilder
 import org.knowm.xchart.style.markers.SeriesMarkers
 import org.springframework.stereotype.Service
@@ -9,7 +9,6 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.nio.file.Paths
 import java.time.Instant
-import java.time.ZoneId
 import java.util.Date
 
 @Service
@@ -27,7 +26,7 @@ class ChartGenerationService(private val dataframeService: DataframeService) {
         val aboveAvg = lastVolume > avg
 
         val chart = XYChartBuilder()
-            .width(1000).height(600)
+            .width(1800).height(1200)
             .title("BTC Transaction Volume vs 365-day Average")
             .xAxisTitle("Date")
             .yAxisTitle("Volume (USD)")
@@ -43,11 +42,12 @@ class ChartGenerationService(private val dataframeService: DataframeService) {
             marker = SeriesMarkers.CIRCLE
             markerColor = if (aboveAvg) Color.GREEN else Color.RED
         }
+        return chartAsset(chart)
+    }
 
+    private fun chartAsset(chart: XYChart): String {
         val outputPath = Paths.get("/home/leandro/charts/btc_volume_vs_avg.png").toAbsolutePath().toString()
-
         BitmapEncoder.saveBitmap(chart, outputPath, BitmapEncoder.BitmapFormat.PNG)
-
         return outputPath
     }
 }

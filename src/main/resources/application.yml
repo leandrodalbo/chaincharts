@@ -5,5 +5,5 @@ spring:
   application:
     name: chaincharts-api
 
-dataConf:
+dataconf:
   apiUrl: https://api.blockchain.info

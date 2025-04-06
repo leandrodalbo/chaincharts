@@ -26,8 +26,15 @@ dependencies {
 	implementation("org.knowm.xchart:xchart:3.8.8")
 
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(module = "mockito-core")
+	}
+
+	testImplementation("com.ninja-squad:springmockk:4.0.2")
+
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("io.mockk:mockk:1.13.7")
+
 	testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

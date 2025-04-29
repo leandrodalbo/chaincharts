@@ -5,7 +5,6 @@ import com.chaincharts.domain.TimeValue
 import org.knowm.xchart.XYChart
 import org.knowm.xchart.XYChartBuilder
 import org.knowm.xchart.XYSeries
-import org.knowm.xchart.style.Styler
 import org.knowm.xchart.style.markers.SeriesMarkers
 import org.springframework.stereotype.Service
 import java.awt.BasicStroke
@@ -17,7 +16,7 @@ import java.util.Date
 class ChartGenerationService(private val dataframeService: DataframeService) {
 
     fun btcVolumeChart(data: Map<String, Any>, chartInfo: ChartInfo): XYChart {
-        val df = dataframeService.volumePointsDataframe(data)
+        val df = dataframeService.timeVolumeDataframe(data)
 
         val dates = (df["time"].toList() as List<Instant>).map { Date.from(it) }
         val volumes = df["volume"].toList() as List<Double>
@@ -48,7 +47,7 @@ class ChartGenerationService(private val dataframeService: DataframeService) {
     }
 
     fun btcTransactionsChart(data: Map<String, Any>, chartInfo: ChartInfo): XYChart {
-        val df = dataframeService.nTransactionsDataframe(data)
+        val df = dataframeService.timeTransactionsDataframe(data)
 
         val dates = (df["time"].toList() as List<Instant>).map { Date.from(it) }
         val transactions = df["transactions"].toList() as List<Long>
@@ -91,6 +90,44 @@ class ChartGenerationService(private val dataframeService: DataframeService) {
                     marker = SeriesMarkers.DIAMOND
                 }
             }
+
+    }
+
+    fun btcTransactionsPerBlockChart(data: Map<String, Any>, chartInfo: ChartInfo): XYChart {
+        val df = dataframeService.timeTransactionsDataframe(data)
+
+        val dates = (df["time"].toList() as List<Instant>).map { Date.from(it) }
+        val transactions = df["transactions"].toList() as List<Long>
+
+
+        val minIndex = transactions.indices.minByOrNull { transactions[it] } ?: 0
+        val maxIndex = transactions.indices.maxByOrNull { transactions[it] } ?: 0
+
+        val chart = XYChartBuilder()
+            .width(chartInfo.width).height(chartInfo.height)
+            .title(chartInfo.chartTitle)
+            .xAxisTitle(chartInfo.xAxisTitle)
+            .yAxisTitle(chartInfo.yAxisTitle)
+            .build()
+
+        chart.addSeries(chartInfo.seriesA, dates, transactions)
+
+
+
+        chart.addSeries(chartInfo.seriesB, listOf(dates[minIndex]), listOf(transactions[minIndex]))
+            .apply {
+                marker = SeriesMarkers.CIRCLE
+                lineColor = Color.ORANGE
+            }
+
+        chart.addSeries(chartInfo.seriesC, listOf(dates[maxIndex]), listOf(transactions[maxIndex]))
+            .apply {
+                marker = SeriesMarkers.DIAMOND
+                lineColor = Color.GREEN
+            }
+
+
+        return chart
 
     }
 }

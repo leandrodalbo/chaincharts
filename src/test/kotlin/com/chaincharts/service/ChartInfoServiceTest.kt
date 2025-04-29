@@ -17,6 +17,7 @@ class ChartInfoServiceTest {
         assertThat(result.chartTitle).contains(TimeValue.I365.toString())
         assertThat(result.dataUri).contains("estimated-transaction-volume-usd")
         assertThat(result.assetKey).isNotEmpty()
+        assertThat(result.assetKey).isEqualTo(chartInfoService.generateChartKey(result.dataUri))
     }
 
     @Test
@@ -27,6 +28,18 @@ class ChartInfoServiceTest {
         assertThat(result.chartTitle).contains(TimeValue.I365.toString())
         assertThat(result.dataUri).contains("n-transactions")
         assertThat(result.assetKey).isNotEmpty()
+        assertThat(result.assetKey).isEqualTo(chartInfoService.generateChartKey(result.dataUri))
+    }
+
+    @Test
+    fun shouldCreateBTCTransactionsPerBlockChartMetadata() {
+        val result = chartInfoService.transactionsPerBlockInfo(TimeUnit.HOURS, TimeValue.I9)
+
+        assertThat(result.chartTitle).isEqualTo("N Transactions per block")
+        assertThat(result.xAxisTitle).isEqualTo("Date")
+        assertThat(result.yAxisTitle).isEqualTo("Transactions")
+        assertThat(result.dataUri).contains("n-transactions-per-block")
+        assertThat(result.assetKey).isEqualTo(chartInfoService.generateChartKey(result.dataUri))
     }
 
     @Test

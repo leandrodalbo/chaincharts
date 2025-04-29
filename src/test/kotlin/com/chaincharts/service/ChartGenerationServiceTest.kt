@@ -62,4 +62,30 @@ class ChartGenerationServiceTest {
         assertThat(result.width).isEqualTo(chartInfo.width)
         assertThat(result.height).isEqualTo(chartInfo.height)
     }
+
+    @Test
+    fun shouldCreateABTCTransactionsPerBlockChart() {
+        val data = mapOf(
+            "status" to "ok",
+            "name" to "n-transactions-per-block",
+            "unit" to "Transactions",
+            "period" to "day",
+            "description" to "The number of transactions per block",
+            "values" to listOf(
+                mapOf(
+                    "x" to 1712421101,
+                    "y" to 4304
+                )
+            )
+        )
+
+        val chartInfo = chartInfoService.transactionsPerBlockInfo(TimeUnit.DAYS, TimeValue.I200)
+        val result = chartGenerationService.btcTransactionsPerBlockChart(data, chartInfo)
+
+        assertThat(result).isNotNull
+        assertThat(result.title).isEqualTo(chartInfo.chartTitle)
+        assertThat(result.width).isEqualTo(chartInfo.width)
+        assertThat(result.height).isEqualTo(chartInfo.height)
+
+    }
 }

@@ -22,4 +22,9 @@ class ChartsController(private val chartsManagerService: ChartsManagerService) {
     fun btcTransactions(@RequestParam timeUnit: TimeUnit, @RequestParam timeValue: TimeValue): ChartInfo =
         chartsManagerService.btcTransactionsChart(timeUnit, timeValue)
 
+    @GetMapping("/btctransactionsperblockchart")
+    fun btcTransactionsPerBlock(@RequestParam timeUnit: TimeUnit, @RequestParam timeValue: TimeValue): ChartInfo =
+        chartsManagerService.btcTransactionsPerBlockChart(timeUnit, timeValue)
+
+
 }

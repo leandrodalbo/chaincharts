@@ -33,5 +33,14 @@ class ChartsManagerService(
         return chartInfo.copy(assetUri = chartUri)
     }
 
+    fun btcTransactionsPerBlockChart(timeUnit: TimeUnit, timeValue: TimeValue): ChartInfo {
+        val chartInfo = chartInfoService.transactionsPerBlockInfo(timeUnit, timeValue)
+        val chartData = dataService.fetchData(chartInfo.dataUri)
+        val chart = this.chartGenerationService.btcTransactionsPerBlockChart(chartData, chartInfo)
+        val chartUri = chartDispatcherService.chartUri(chart, chartInfo.assetKey)
+
+        return chartInfo.copy(assetUri = chartUri)
+    }
+
 
 }

@@ -64,7 +64,7 @@ class ChartInfoService {
             timeValue,
             dataUri,
             key,
-            assetUri = generateChartKey(dataUri),
+            assetUri = "",
             width = 1800,
             height = 1200,
             chartTitle = "N Transactions per block",

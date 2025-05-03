@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service
 @Service
 class DataframeService(private val dataAdapterService: DataAdapterService) {
 
-    fun volumePointsDataframe(data: Map<String, Any>): AnyFrame {
-        val volumePoints = dataAdapterService.listOfVolumePoints(data)
+    fun timeVolumeDataframe(data: Map<String, Any>): AnyFrame {
+        val volumePoints = dataAdapterService.timestampDoubleData(data)
 
         return dataFrameOf(
             "time" to volumePoints.map { it.timestamp },
@@ -16,12 +16,14 @@ class DataframeService(private val dataAdapterService: DataAdapterService) {
         )
     }
 
-    fun nTransactionsDataframe(data: Map<String, Any>): AnyFrame {
-        val volumePoints = dataAdapterService.listOfNTransactions(data)
+    fun timeTransactionsDataframe(data: Map<String, Any>): AnyFrame {
+        val volumePoints = dataAdapterService.timestampLongData(data)
 
         return dataFrameOf(
             "time" to volumePoints.map { it.timestamp },
             "transactions" to volumePoints.map { it.value }
         )
     }
+
+
 }

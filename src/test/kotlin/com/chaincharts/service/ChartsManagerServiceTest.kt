@@ -106,4 +106,47 @@ class ChartsManagerServiceTest {
         verify { chartGenerationService.btcTransactionsChart(any(), any()) }
         verify { chartDispatcherService.chartUri(any<XYChart>(), any<String>()) }
     }
+
+
+    @Test
+    fun shouldFetchDataAndGenerateABTCTransactionsPerBlockChart() {
+        val data = mapOf(
+            "status" to "ok",
+            "name" to "n-transactions-per-block",
+            "unit" to "Transactions",
+            "period" to "day",
+            "description" to "The number of transactions per block",
+            "values" to listOf(
+                mapOf(
+                    "x" to 1712421101,
+                    "y" to 5011
+                )
+            )
+        )
+
+        var chart: XYChart = XYChartBuilder()
+            .width(100).height(200)
+            .title("mychart")
+            .xAxisTitle("x")
+            .yAxisTitle("y")
+            .build()
+
+        every { dataService.fetchData(any<String>()) } returns data
+        every { chartGenerationService.btcTransactionsPerBlockChart(any(), any<ChartInfo>()) } returns chart
+        every {
+            chartDispatcherService.chartUri(
+                any<XYChart>(),
+                any<String>()
+            )
+        } returns "/home/leandro/charts/chartKey.png"
+
+        val result = chartsManagerService.btcTransactionsPerBlockChart(TimeUnit.DAYS, TimeValue.I21)
+
+        assertThat(result.assetKey).isNotNull()
+        assertThat(result.assetUri).isEqualTo("/home/leandro/charts/chartKey.png")
+
+        verify { dataService.fetchData(any()) }
+        verify { chartGenerationService.btcTransactionsPerBlockChart(any(), any()) }
+        verify { chartDispatcherService.chartUri(any<XYChart>(), any<String>()) }
+    }
 }

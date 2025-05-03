@@ -8,7 +8,7 @@ class DataframeServiceTest {
     private var dataframeService = DataframeService(DataAdapterService())
 
     @Test
-    fun shouldCreateADataframeWithVolumePoints() {
+    fun shouldCreateADataframeWithTimeAndVolumes() {
         val data = mapOf(
             "status" to "ok",
             "name" to "Estimated USD Transaction Value",
@@ -23,7 +23,7 @@ class DataframeServiceTest {
             )
         )
 
-        val result = dataframeService.volumePointsDataframe(data)
+        val result = dataframeService.timeVolumeDataframe(data)
 
         assertThat(result).isNotNull
         assertThat(result["time"]).isNotNull
@@ -31,7 +31,7 @@ class DataframeServiceTest {
     }
 
     @Test
-    fun shouldCreateADataframeWithTransactionsData() {
+    fun shouldCreateADataframeWithTimeAndTransactions() {
         val data = mapOf(
             "status" to "ok",
             "name" to "n-transactions",
@@ -46,7 +46,7 @@ class DataframeServiceTest {
             )
         )
 
-        val result = dataframeService.nTransactionsDataframe(data)
+        val result = dataframeService.timeTransactionsDataframe(data)
 
         assertThat(result).isNotNull
         assertThat(result["time"]).isNotNull

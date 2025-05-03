@@ -67,6 +67,25 @@ class ChartsControllerTest {
     }
 
     @Test
+    fun shouldGetBTCTransactionsPerBlockChart() {
+        val chartInfo: ChartInfo = chartInfoService.transactionsPerBlockInfo(TimeUnit.HOURS, TimeValue.I55)
+
+        every { chartsManagerService.btcTransactionsPerBlockChart(any<TimeUnit>(), any<TimeValue>()) } returns chartInfo
+
+        val response = mockMvc.perform(
+            get("/api/charts/btctransactionsperblockchart")
+                .queryParam("timeUnit", TimeUnit.HOURS.name)
+                .queryParam("timeValue", TimeValue.I55.name)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andReturn().response
+
+        assertThat(response.status).isEqualTo(HttpStatus.OK.value())
+
+        verify { chartsManagerService.btcTransactionsPerBlockChart(any<TimeUnit>(), any<TimeValue>()) }
+    }
+
+    @Test
     fun shouldHandleInvalidInputs() {
 
         val response = mockMvc.perform(

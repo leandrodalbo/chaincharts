@@ -1,26 +1,26 @@
 package com.chaincharts.service
 
-import com.chaincharts.dataobjects.NTransactions
-import com.chaincharts.dataobjects.VolumePoint
+import com.chaincharts.dataobjects.TimestampLongPair
+import com.chaincharts.dataobjects.TimestampDoublePair
 import org.springframework.stereotype.Service
 import java.time.Instant
 
 @Service
 class DataAdapterService {
 
-    fun listOfVolumePoints(data: Map<String, Any>): List<VolumePoint> {
+    fun timestampDoubleData(data: Map<String, Any>): List<TimestampDoublePair> {
         val values = extractValues(data)
 
         return values.map {
-            VolumePoint(Instant.ofEpochSecond((it["x"] as Number).toLong()), it["y"] as Double)
+            TimestampDoublePair(Instant.ofEpochSecond((it["x"] as Number).toLong()), it["y"] as Double)
         }
     }
 
-    fun listOfNTransactions(data: Map<String, Any>): List<NTransactions> {
+    fun timestampLongData(data: Map<String, Any>): List<TimestampLongPair> {
         val values = extractValues(data)
 
         return values.map {
-            NTransactions(Instant.ofEpochSecond((it["x"] as Number).toLong()), (it["y"] as Number).toLong())
+            TimestampLongPair(Instant.ofEpochSecond((it["x"] as Number).toLong()), (it["y"] as Number).toLong())
         }
     }
 

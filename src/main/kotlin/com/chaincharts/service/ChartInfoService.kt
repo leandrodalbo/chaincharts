@@ -55,6 +55,29 @@ class ChartInfoService {
 
     }
 
+    fun transactionsPerBlockInfo(timeUnit: TimeUnit, timeValue: TimeValue): ChartInfo {
+        val dataUri =
+            "/charts/n-transactions-per-block?timespan=${timeValue.value}${timeUnit.value}&format=json"
+        val key = generateChartKey(dataUri)
+        return ChartInfo(
+            timeUnit,
+            timeValue,
+            dataUri,
+            key,
+            assetUri = "",
+            width = 1800,
+            height = 1200,
+            chartTitle = "N Transactions per block",
+            xAxisTitle = "Date",
+            yAxisTitle = "Transactions",
+            seriesA = "Transactions per block",
+            seriesB = "Min",
+            seriesC = "Max",
+            seriesD = ""
+        )
+
+    }
+
     fun generateChartKey(dataUri: String): String {
         val digest = MessageDigest.getInstance("SHA-256").digest(dataUri.toByteArray())
         return digest.joinToString("") { "%02x".format(it) }

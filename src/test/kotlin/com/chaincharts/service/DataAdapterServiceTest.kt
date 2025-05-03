@@ -8,7 +8,7 @@ class DataAdapterServiceTest {
     private var dataAdapterService = DataAdapterService()
 
     @Test
-    fun shouldCreateAListOfVolumePointsUsingResponseData() {
+    fun shouldCreateAListOfTimestampAndDoubleValues() {
         val data = mapOf(
             "status" to "ok",
             "name" to "Estimated USD Transaction Value",
@@ -23,7 +23,7 @@ class DataAdapterServiceTest {
             )
         )
 
-        val result = dataAdapterService.listOfVolumePoints(data)
+        val result = dataAdapterService.timestampDoubleData(data)
 
         assertThat(result).isNotEmpty()
         assertThat(result.get(0).value).isEqualTo(8780468949.850952)
@@ -32,7 +32,7 @@ class DataAdapterServiceTest {
 
 
     @Test
-    fun shouldCreateAListOfNTransactionsUsingResponseData() {
+    fun shouldCreateAListOfTimestampAndLongValues() {
         val data = mapOf(
             "status" to "ok",
             "name" to "n-transactions",
@@ -47,7 +47,7 @@ class DataAdapterServiceTest {
             )
         )
 
-        val result = dataAdapterService.listOfNTransactions(data)
+        val result = dataAdapterService.timestampLongData(data)
 
         assertThat(result).isNotEmpty()
         assertThat(result.get(0).value).isEqualTo(248135)
